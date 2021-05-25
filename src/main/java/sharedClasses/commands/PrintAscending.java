@@ -4,6 +4,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.util.Comparator;
 
@@ -13,11 +14,12 @@ import java.util.Comparator;
 
 public class PrintAscending extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public PrintAscending() {
-        super("print_ascending", "вывести элементы коллекции в порядке возрастания", 0, false);
+    public PrintAscending(User user) {
+        super("print_ascending", "вывести элементы коллекции в порядке возрастания", 0, false, user);
     }
 
     /**

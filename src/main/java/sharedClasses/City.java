@@ -10,7 +10,7 @@ import java.util.Date;
  * Класс City.
  */
 
-public class City implements Serializable {
+public class City implements Serializable, Comparable {
     /**
      * Id города. Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически.
      */
@@ -55,6 +55,8 @@ public class City implements Serializable {
      * Губернатор города. Поле не может быть null.
      */
     private Human governor;
+
+    private String user;
 
     /**
      * Метод, присваивающий название города.
@@ -153,6 +155,14 @@ public class City implements Serializable {
      */
     public void setGovernor(Human governor) {
         this.governor = governor;
+    }
+
+    public void setOwner(String user) {
+        this.user = user;
+    }
+
+    public String getOwner() {
+        return user;
     }
 
     /**
@@ -272,5 +282,11 @@ public class City implements Serializable {
                 ", площадь агломерации: " + getAgglomeration() +
                 ", климат: " + getClimate() + ", возраст губернатора: " +
                 getGovernor().getAge() + ".";
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        City city = (City) o;
+        return city.getArea() - getArea();
     }
 }

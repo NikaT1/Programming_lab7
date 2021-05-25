@@ -4,6 +4,7 @@ package sharedClasses.commands;
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 /**
  * Класс для команды exit, которая завершает программу без сохранения в файл коллекции.
@@ -11,11 +12,12 @@ import sharedClasses.Serialization;
 
 public class CommandExit extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public CommandExit() {
-        super("exit", "завершить программу (без сохранения в файл)", 0, false);
+    public CommandExit(User user) {
+        super("exit", "завершить программу (без сохранения в файл)", 0, false, user);
     }
 
     /**

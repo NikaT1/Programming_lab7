@@ -3,6 +3,7 @@ package sharedClasses.commands;
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 /**
  * Класс для команды show, которая выводит в стандартный поток вывода все элементы коллекции в строковом представлении.
@@ -14,8 +15,8 @@ public class Show extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public Show() {
-        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении", 0, false);
+    public Show(User user) {
+        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении", 0, false, user);
     }
 
     /**

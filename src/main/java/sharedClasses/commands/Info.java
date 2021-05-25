@@ -4,6 +4,7 @@ package sharedClasses.commands;
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 /**
  * Класс для команды info, которая выводит в стандартный поток вывода информацию о коллекции.
@@ -11,11 +12,12 @@ import sharedClasses.Serialization;
 
 public class Info extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public Info() {
-        super("info", "вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)", 0, false);
+    public Info(User user) {
+        super("info", "вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)", 0, false, user);
     }
 
     /**

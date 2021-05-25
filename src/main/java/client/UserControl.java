@@ -26,6 +26,13 @@ public class UserControl {
         return password;
     }
 
+    public String getTypeOfUser (boolean newUser){
+        String type;
+        if (newUser) type = "newUser";
+        else type = "oldUser";
+        return type;
+    }
+
     private String getEncodedPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
         String encodedPassword = getEncodedString(messageDigest.digest(("*&^mVLCf(#" + password).getBytes(StandardCharsets.UTF_8)));

@@ -2,7 +2,9 @@ package sharedClasses.commands;
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
+import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 import sharedClasses.UserInput;
 
 import java.io.BufferedInputStream;
@@ -26,8 +28,8 @@ public class ExecuteScript extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public ExecuteScript() {
-        super("execute_script file_name", "считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", 1, false);
+    public ExecuteScript(User user) {
+        super("execute_script file_name", "считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", 1, false, user);
         paths = new HashSet<>();
     }
 
@@ -61,19 +63,16 @@ public class ExecuteScript extends Command {
                 while (scanner.hasNext()) {
                     String[] s = scanner.nextLine().split(" ");
                     if (commandsControl.getCommands().containsKey(s[0])) {
-                        if (s[0].equals("save")) {
-                            paths.clear();
-                            throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, так как найдена недоступная команда");
-                        } else {
-                            Command currentCommand = commandsControl.getCommands().get(s[0]);
-                            if (currentCommand.getAmountOfArguments() > 0) {
-                                currentCommand.setArgument(s[1]);
-                            }
-                            if (currentCommand.isNeedCity()) {
-                                currentCommand.setCity(userInput.readCity());
-                            }
-                            currentCommand.doCommand(ioForClient, commandsControl, priorityQueue);
+                        Command currentCommand = commandsControl.getCommands().get(s[0]);
+                        if (currentCommand.getAmountOfArguments() > 0) {
+                            currentCommand.setArgument(s[1]);
                         }
+                        if (currentCommand.isNeedCity()) {
+                            City city = userInput.readCity();
+                            city.setOwner(getUser().getLogin());
+                            currentCommand.setCity(city);
+                        }
+                        currentCommand.doCommand(ioForClient, commandsControl, priorityQueue);
                     } else {
                         paths.clear();
                         throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, так как найдена несуществующая команда");

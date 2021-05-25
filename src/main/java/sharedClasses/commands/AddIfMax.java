@@ -5,6 +5,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -20,8 +21,8 @@ public class AddIfMax extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AddIfMax() {
-        super("add_if_max {element}", "добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции", 0, true);
+    public AddIfMax(User user) {
+        super("add_if_max {element}", "добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции", 0, true, user);
     }
 
     /**
@@ -37,11 +38,11 @@ public class AddIfMax extends Command {
         try {
             if (priorityQueue.getCollection().peek() != null) {
                 if (city.getArea() > priorityQueue.getCollection().peek().getArea()) {
-                    priorityQueue.addToCollection(city);
+                    priorityQueue.addToCollection(city, getUser());
                     result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
                 } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
             } else {
-                priorityQueue.addToCollection(city);
+                priorityQueue.addToCollection(city, getUser());
                 result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
             }
         } catch (ClassNotFoundException | SQLException | ParseException e) {

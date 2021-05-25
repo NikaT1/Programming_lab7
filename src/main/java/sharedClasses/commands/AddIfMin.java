@@ -4,6 +4,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -21,8 +22,8 @@ public class AddIfMin extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AddIfMin() {
-        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции", 0, true);
+    public AddIfMin(User user) {
+        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции", 0, true, user);
     }
 
     /**
@@ -43,15 +44,15 @@ public class AddIfMin extends Command {
             City city = this.getCity();
             if (dop.peek() != null) {
                 if (city.getArea() < dop.peek().getArea()) {
-                    priorityQueue.addToCollection(city);
+                    priorityQueue.addToCollection(city, getUser());
                     result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
                 } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
             } else {
-                priorityQueue.addToCollection(city);
+                priorityQueue.addToCollection(city, getUser());
                 result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
             }
             while (!dop.isEmpty()) {
-                priorityQueue.addToCollection(dop.poll());
+                priorityQueue.getCollection().add(dop.poll());
             }
         } catch (ClassNotFoundException | SQLException | ParseException e) {
             result.append("Возникла ошибка при попытке соединения с БД, новый объект не добавлен");

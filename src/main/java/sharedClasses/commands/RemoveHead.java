@@ -3,7 +3,11 @@ package sharedClasses.commands;
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
+import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
+
+import java.sql.SQLException;
 
 /**
  * Класс для команды remove_head, которая выводит и удаляет первый элемент из коллекции.
@@ -11,11 +15,12 @@ import sharedClasses.Serialization;
 
 public class RemoveHead extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public RemoveHead() {
-        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false);
+    public RemoveHead(User user) {
+        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false, user);
     }
 
     /**
@@ -27,9 +32,19 @@ public class RemoveHead extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
-        else {
-            result.append(priorityQueue.pollFromQueue().toString()).append("удаление элемента успешно завершено");
+        try {
+            if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
+            else {
+                City city = priorityQueue.pollFromQueue();
+                boolean flag = priorityQueue.remove(city, getUser());
+                if (flag) result.append("удаление элемента успешно завершено");
+                else {
+                    result.append("удаление элемента не выполнено!");
+                    priorityQueue.getCollection().add(city);
+                }
+            }
+        } catch (SQLException e) {
+            result.append("ошибка при попытке удаления значения из БД; удаление не выполнено");
         }
         return Serialization.serializeData(result.toString());
     }

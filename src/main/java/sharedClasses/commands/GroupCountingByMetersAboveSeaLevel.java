@@ -4,6 +4,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,12 @@ import java.util.stream.Collectors;
 
 public class GroupCountingByMetersAboveSeaLevel extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public GroupCountingByMetersAboveSeaLevel() {
-        super("group_counting_by_meters_above_sea_level", "сгруппировать элементы коллекции по значению поля metersAboveSeaLevel, вывести количество элементов в каждой группе", 0, false);
+    public GroupCountingByMetersAboveSeaLevel(User user) {
+        super("group_counting_by_meters_above_sea_level", "сгруппировать элементы коллекции по значению поля metersAboveSeaLevel, вывести количество элементов в каждой группе", 0, false, user);
     }
 
     /**

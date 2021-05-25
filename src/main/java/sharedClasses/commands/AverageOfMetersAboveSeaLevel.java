@@ -5,6 +5,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 /**
  * Класс для команды average_of_meters_above_sea_level, которая выводит среднее значение поля metersAboveSeaLevel
@@ -16,8 +17,8 @@ public class AverageOfMetersAboveSeaLevel extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AverageOfMetersAboveSeaLevel() {
-        super("average_of_meters_above_sea_level", "вывести среднее значение поля metersAboveSeaLevel для всех элементов коллекции", 0, false);
+    public AverageOfMetersAboveSeaLevel(User user) {
+        super("average_of_meters_above_sea_level", "вывести среднее значение поля metersAboveSeaLevel для всех элементов коллекции", 0, false, user);
     }
 
     /**

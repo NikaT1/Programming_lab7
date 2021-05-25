@@ -3,6 +3,7 @@ package sharedClasses.commands;
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
+import sharedClasses.User;
 
 import java.io.Serializable;
 
@@ -24,7 +25,7 @@ public abstract class Command implements Serializable {
     private String argument;
     private City city;
     private final boolean needCity;
-    //private final User user;
+    private final User user;
 
     /**
      * Конструктор.
@@ -32,12 +33,12 @@ public abstract class Command implements Serializable {
      * @param name            название команды.
      * @param someInformation дополнительная информация о команде.
      */
-    public Command(String name, String someInformation, int amountOfArguments, boolean needCity) {
+    public Command(String name, String someInformation, int amountOfArguments, boolean needCity, User user) {
         this.name = name;
         this.someInformation = someInformation;
         this.amountOfArguments = amountOfArguments;
         this.needCity = needCity;
-       // this.user = user;
+        this.user = user;
     }
 
     /**
@@ -68,7 +69,7 @@ public abstract class Command implements Serializable {
         return someInformation;
     }
 
-    //public User getUser() { return user; }
+    public User getUser() { return user; }
 
     public int getAmountOfArguments() {
         return amountOfArguments;

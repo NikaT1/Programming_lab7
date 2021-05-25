@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 public class Server {
     private String[] args;
-    private final CommandsControl commandsControl;
     private final Serialization serialization;
     private PriorityQueueStorage priorityQueue;
     private final IOForClient ioForClient;
@@ -30,7 +29,6 @@ public class Server {
 
     public Server() {
         log.log(Level.INFO, "Запуск сервера");
-        commandsControl = new CommandsControl();
         serialization = new Serialization();
         ioForClient = new IOForClient(true);
         dataBaseControl = new DataBaseControl();
@@ -104,22 +102,21 @@ public class Server {
             if (object.getDescription().equals("Command")) {
                 Command command = (Command) object.getObject();
                 log.log(Level.INFO, "Получение результата работы команды");
-                byte[] commandResult = command.doCommand(ioForClient, commandsControl, priorityQueue);
+                byte[] commandResult = command.doCommand(ioForClient, new CommandsControl(command.getUser()), priorityQueue);
                 log.log(Level.INFO, "Отправка клиенту результата работы команды");
                 ioForClient.output(commandResult);
             } else {
                 User user = (User) object.getObject();
                 log.log(Level.INFO, "Получение результата проверки пользователя/добавления пользователя");
-                //System.out.println(dataBaseControl.checkUser(user));
-                byte[] result = Serialization.serializeData(dataBaseControl.checkUser(user));
-                log.log(Level.INFO, "Отправка клиенту результата проверки");
+                byte[] result;
+                if (object.getDescription().equals("oldUser")) result = Serialization.serializeData(dataBaseControl.checkUser(user));
+                else result = Serialization.serializeData(dataBaseControl.addUser(user));
+                log.log(Level.INFO, "Отправка клиенту результата проверки/добавления");
                 ioForClient.output(result);
             }
         } catch (InvalidAlgorithmParameterException e) {
             ioForClient.output(e.getMessage());
         } catch (NoSuchElementException | NumberFormatException | ParseException e) {
-            ExecuteScript command = (ExecuteScript) commandsControl.getCommands().get("execute_script");
-            command.getPaths().clear();
             ioForClient.output("Неверный формат введенных данных");
         } catch (SocketTimeoutException e) {
             log.log(Level.SEVERE, "Время ожидания истекло");

@@ -5,6 +5,7 @@ import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.City;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -20,8 +21,8 @@ public class Add extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public Add() {
-        super("add", "добавить новый элемент в коллекцию", 0, true);
+    public Add(User user) {
+        super("add", "добавить новый элемент в коллекцию", 0, true, user);
     }
 
     /**
@@ -35,7 +36,7 @@ public class Add extends Command {
         StringBuilder result = new StringBuilder();
         try {
             City city = this.getCity();
-            priorityQueue.addToCollection(city);
+            priorityQueue.addToCollection(city, getUser());
             result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
         } catch (IllegalStateException e) {
             result.append("Ошибка: в коллекции слишком много элементов; объект коллекции не создан");

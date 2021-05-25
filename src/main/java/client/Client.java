@@ -1,11 +1,8 @@
 package client;
 
-import sharedClasses.WrapperForObjects;
+import sharedClasses.*;
 import sharedClasses.commands.Command;
 import sharedClasses.commands.CommandsControl;
-import sharedClasses.Serialization;
-import sharedClasses.User;
-import sharedClasses.UserInput;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -25,17 +22,17 @@ public class Client {
     private DatagramChannel datagramChannel;
     private SocketAddress socketAddress;
     private final Serialization serialization;
-    private final CommandsControl commandsControl;
+    private CommandsControl commandsControl;
     private final UserInput userInput;
     private final InputAndOutput inputAndOutput;
     private final Scanner scanner;
+    private User user;
 
     public Client() {
         scanner = new Scanner(System.in);
         inputAndOutput = new InputAndOutput(scanner, true);
         userInput = new UserInput(inputAndOutput);
         serialization = new Serialization();
-        commandsControl = new CommandsControl();
     }
 
     public InputAndOutput getInputAndOutput() {
@@ -72,8 +69,9 @@ public class Client {
                 client.initialize();
                 client.connect("localhost", port);
                 flag = false;
-                client.connectToDB();
-                client.getInputAndOutput().output("Введите команду:");
+                client.user = client.connectToDB();
+                client.commandsControl = new CommandsControl(client.user);
+                client.inputAndOutput.output("Введите команду:");
                 client.run();
             } catch (IOException e) {
                 client.getInputAndOutput().output("Соединение не установлено");
@@ -97,7 +95,9 @@ public class Client {
                 currentCommand.setArgument(s[1]);
             }
             if (currentCommand.isNeedCity()) {
-                currentCommand.setCity(userInput.readCity());
+                City city = userInput.readCity();
+                city.setOwner(user.getLogin());
+                currentCommand.setCity(city);
             }
             WrapperForObjects object = new WrapperForObjects(currentCommand, "Command");
             byte[] ser = Serialization.serializeData(object);
@@ -119,7 +119,9 @@ public class Client {
         bytes = buffer.array();
         String outputForUser = (String) serialization.deserializeData(bytes);
         inputAndOutput.output(outputForUser);
-        if (outputForUser != null && outputForUser.equals("Пользователь не найден")) {
+        if (outputForUser != null && (outputForUser.equals("Пользователь не найден") ||
+                outputForUser.equals("Новый пользователь не добавлен, попробуйте придумать другой логин") ||
+                outputForUser.equals("Пользователь найден, неверный пароль!"))) {
             flag = false;
         }
         if (outputForUser != null && outputForUser.equals("Работа приложения завершается")) {
@@ -137,11 +139,11 @@ public class Client {
         return flag;
     }
 
-    private void connectToDB() throws NoSuchAlgorithmException, IOException {
+    private User connectToDB() throws NoSuchAlgorithmException, IOException {
         boolean flag = false;
         boolean newUser = !inputAndOutput.readAnswer("Вы зарегестрированы? (введите yes/no)");
         UserControl userControl = new UserControl();
-        WrapperForObjects user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), "User");
+        WrapperForObjects user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), userControl.getTypeOfUser(newUser));
         datagramChannel.register(selector, SelectionKey.OP_WRITE);
         while (!flag) {
             if (selector.select() == 0) {
@@ -174,13 +176,14 @@ public class Client {
                         else {
                             flag = false;
                             newUser = !inputAndOutput.readAnswer("Вы зарегестрированы? (введите yes/no)");
-                            user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), "User");
+                            user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), userControl.getTypeOfUser(newUser));
                         }
                     }
                 }
                 keyIterator.remove();
             }
         }
+        return (User) user.getObject();
     }
 
     private void run() throws IOException {
