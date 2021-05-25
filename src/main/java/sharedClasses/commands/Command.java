@@ -1,4 +1,4 @@
-package server.commands;
+package sharedClasses.commands;
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
@@ -24,6 +24,7 @@ public abstract class Command implements Serializable {
     private String argument;
     private City city;
     private final boolean needCity;
+    //private final User user;
 
     /**
      * Конструктор.
@@ -36,6 +37,7 @@ public abstract class Command implements Serializable {
         this.someInformation = someInformation;
         this.amountOfArguments = amountOfArguments;
         this.needCity = needCity;
+       // this.user = user;
     }
 
     /**
@@ -65,6 +67,8 @@ public abstract class Command implements Serializable {
     public String getSomeInformation() {
         return someInformation;
     }
+
+    //public User getUser() { return user; }
 
     public int getAmountOfArguments() {
         return amountOfArguments;

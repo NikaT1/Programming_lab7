@@ -1,8 +1,10 @@
 package client;
 
-import server.commands.Command;
-import server.commands.CommandsControl;
+import sharedClasses.WrapperForObjects;
+import sharedClasses.commands.Command;
+import sharedClasses.commands.CommandsControl;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 import sharedClasses.UserInput;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -68,12 +71,15 @@ public class Client {
             try {
                 client.initialize();
                 client.connect("localhost", port);
-                client.getInputAndOutput().output("Введите команду:");
                 flag = false;
+                client.connectToDB();
+                client.getInputAndOutput().output("Введите команду:");
                 client.run();
             } catch (IOException e) {
                 client.getInputAndOutput().output("Соединение не установлено");
                 flag = client.getInputAndOutput().readAnswer("Повторить попытку? (yes/no)");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -93,7 +99,8 @@ public class Client {
             if (currentCommand.isNeedCity()) {
                 currentCommand.setCity(userInput.readCity());
             }
-            byte[] ser = Serialization.serializeData(currentCommand);
+            WrapperForObjects object = new WrapperForObjects(currentCommand, "Command");
+            byte[] ser = Serialization.serializeData(object);
             if (ser != null) {
                 ByteBuffer buffer = ByteBuffer.wrap(ser);
                 datagramChannel.send(buffer, socketAddress);
@@ -104,14 +111,18 @@ public class Client {
         }
     }
 
-    private void outputAnswer() throws IOException {
+    private boolean outputAnswer() throws IOException {
+        boolean flag = true;
         byte[] bytes = new byte[100000];
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         socketAddress = datagramChannel.receive(buffer);
         bytes = buffer.array();
         String outputForUser = (String) serialization.deserializeData(bytes);
         inputAndOutput.output(outputForUser);
-        if (outputForUser != null && outputForUser.equals("Коллекция сохранена в файл, работа приложения завершается")) {
+        if (outputForUser != null && outputForUser.equals("Пользователь не найден")) {
+            flag = false;
+        }
+        if (outputForUser != null && outputForUser.equals("Работа приложения завершается")) {
             System.exit(1);
         }
         if (outputForUser != null && outputForUser.equals("Возникла ошибка при сохранении коллекции")) {
@@ -121,6 +132,53 @@ public class Client {
             if (outputForUser == null) {
                 inputAndOutput.output("Ошибка сериализации команды; команда не выполнена");
                 datagramChannel.register(selector, SelectionKey.OP_WRITE);
+            }
+        }
+        return flag;
+    }
+
+    private void connectToDB() throws NoSuchAlgorithmException, IOException {
+        boolean flag = false;
+        boolean newUser = !inputAndOutput.readAnswer("Вы зарегестрированы? (введите yes/no)");
+        UserControl userControl = new UserControl();
+        WrapperForObjects user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), "User");
+        datagramChannel.register(selector, SelectionKey.OP_WRITE);
+        while (!flag) {
+            if (selector.select() == 0) {
+                System.exit(0);
+            }
+            Set selectedKeys = selector.selectedKeys();
+            Iterator keyIterator = selectedKeys.iterator();
+            while (keyIterator.hasNext()) {
+                SelectionKey key = (SelectionKey) keyIterator.next();
+                if (key.isWritable()) {
+                    datagramChannel.register(selector, SelectionKey.OP_READ);
+                    try {
+                        byte[] ser = Serialization.serializeData(user);
+                        if (ser != null) {
+                            ByteBuffer buffer = ByteBuffer.wrap(ser);
+                            datagramChannel.send(buffer, socketAddress);
+                        }
+                    } catch (Exception e) {
+                        inputAndOutput.output("Произошла непредвиденная ошибка");
+                        e.printStackTrace();
+                        System.exit(-1);
+                    }
+                }
+                if (key.isReadable()) {
+                    datagramChannel.register(selector, SelectionKey.OP_WRITE);
+                    flag = outputAnswer();
+                    if (!flag) {
+                        flag = inputAndOutput.readAnswer("Хотите повторить попытку подключения?");
+                        if (!flag) System.exit(0);
+                        else {
+                            flag = false;
+                            newUser = !inputAndOutput.readAnswer("Вы зарегестрированы? (введите yes/no)");
+                            user = new WrapperForObjects(userControl.logIn(inputAndOutput, newUser), "User");
+                        }
+                    }
+                }
+                keyIterator.remove();
             }
         }
     }

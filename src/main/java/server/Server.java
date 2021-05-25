@@ -1,10 +1,12 @@
 package server;
 
 import server.collectionUtils.PriorityQueueStorage;
-import server.commands.Command;
-import server.commands.CommandsControl;
-import server.commands.ExecuteScript;
+import sharedClasses.WrapperForObjects;
+import sharedClasses.commands.Command;
+import sharedClasses.commands.CommandsControl;
+import sharedClasses.commands.ExecuteScript;
 import sharedClasses.Serialization;
+import sharedClasses.User;
 
 import java.io.*;
 import java.net.*;
@@ -22,6 +24,7 @@ public class Server {
     private PriorityQueueStorage priorityQueue;
     private final IOForClient ioForClient;
     private DatagramSocket datagramSocket;
+    private DataBaseControl dataBaseControl;
     private final Logger log = Logger.getLogger(Server.class.getName());
     private final int port = 1200;
 
@@ -30,6 +33,7 @@ public class Server {
         commandsControl = new CommandsControl();
         serialization = new Serialization();
         ioForClient = new IOForClient(true);
+        dataBaseControl = new DataBaseControl();
     }
 
     public static void main(String[] args) {
@@ -41,7 +45,6 @@ public class Server {
     public void run() {
         try {
             log.log(Level.INFO, "Заполнение коллекции");
-            DataBaseControl dataBaseControl = new DataBaseControl();
             priorityQueue = new PriorityQueueStorage(dataBaseControl);
             dataBaseControl.takeAllFromDB(priorityQueue);
             log.log(Level.INFO, "Коллекция успешно заполнена");
@@ -95,13 +98,23 @@ public class Server {
         try {
             datagramSocket.setSoTimeout(600000);
             byte[] bytes = new byte[100000];
-            log.log(Level.INFO, "Чтение команды");
+            log.log(Level.INFO, "Чтение сообщения от пользователя");
             bytes = ioForClient.input(bytes);
-            Command command = (Command) serialization.deserializeData(bytes);
-            log.log(Level.INFO, "Получение результата работы команды");
-            byte[] commandResult = command.doCommand(ioForClient, commandsControl, priorityQueue);
-            log.log(Level.INFO, "Отправка клиенту результата работы команды");
-            ioForClient.output(commandResult);
+            WrapperForObjects object = (WrapperForObjects) serialization.deserializeData(bytes);
+            if (object.getDescription().equals("Command")) {
+                Command command = (Command) object.getObject();
+                log.log(Level.INFO, "Получение результата работы команды");
+                byte[] commandResult = command.doCommand(ioForClient, commandsControl, priorityQueue);
+                log.log(Level.INFO, "Отправка клиенту результата работы команды");
+                ioForClient.output(commandResult);
+            } else {
+                User user = (User) object.getObject();
+                log.log(Level.INFO, "Получение результата проверки пользователя/добавления пользователя");
+                //System.out.println(dataBaseControl.checkUser(user));
+                byte[] result = Serialization.serializeData(dataBaseControl.checkUser(user));
+                log.log(Level.INFO, "Отправка клиенту результата проверки");
+                ioForClient.output(result);
+            }
         } catch (InvalidAlgorithmParameterException e) {
             ioForClient.output(e.getMessage());
         } catch (NoSuchElementException | NumberFormatException | ParseException e) {

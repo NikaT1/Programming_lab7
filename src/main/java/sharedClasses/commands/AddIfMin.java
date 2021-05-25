@@ -1,5 +1,4 @@
-package server.commands;
-
+package sharedClasses.commands;
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
@@ -8,20 +7,22 @@ import sharedClasses.Serialization;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
- * Класс для команды add_if_max, которая добавляет новый элемент в коллекцию, если его значение превышает значение
- * наибольшего элемента этой коллекции.
+ * Класс для команды add_if_min, которая добавляет новый элемент в коллекцию, если его значение меньше, чем у наименьшего
+ * элемента этой коллекции.
  */
 
-public class AddIfMax extends Command {
+public class AddIfMin extends Command {
     private static final long serialVersionUID = 147364832874L;
 
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AddIfMax() {
-        super("add_if_max {element}", "добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции", 0, true);
+    public AddIfMin() {
+        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции", 0, true);
     }
 
     /**
@@ -32,17 +33,25 @@ public class AddIfMax extends Command {
      * @param priorityQueue   хранимая коллекция.
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
-        City city = this.getCity();
+        PriorityQueue<City> dop = new PriorityQueue<>(10, Comparator.comparingInt(City::getArea));
         StringBuilder result = new StringBuilder();
         try {
-            if (priorityQueue.getCollection().peek() != null) {
-                if (city.getArea() > priorityQueue.getCollection().peek().getArea()) {
+            while (!priorityQueue.getCollection().isEmpty()) {
+                City city1 = priorityQueue.pollFromQueue();
+                dop.add(city1);
+            }
+            City city = this.getCity();
+            if (dop.peek() != null) {
+                if (city.getArea() < dop.peek().getArea()) {
                     priorityQueue.addToCollection(city);
                     result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
                 } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
             } else {
                 priorityQueue.addToCollection(city);
                 result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
+            }
+            while (!dop.isEmpty()) {
+                priorityQueue.addToCollection(dop.poll());
             }
         } catch (ClassNotFoundException | SQLException | ParseException e) {
             result.append("Возникла ошибка при попытке соединения с БД, новый объект не добавлен");

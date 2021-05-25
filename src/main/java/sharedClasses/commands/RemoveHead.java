@@ -1,21 +1,21 @@
-package server.commands;
+package sharedClasses.commands;
+
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.Serialization;
 
 /**
- * Класс для команды show, которая выводит в стандартный поток вывода все элементы коллекции в строковом представлении.
+ * Класс для команды remove_head, которая выводит и удаляет первый элемент из коллекции.
  */
 
-public class Show extends Command {
+public class RemoveHead extends Command {
     private static final long serialVersionUID = 147364832874L;
-
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public Show() {
-        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении", 0, false);
+    public RemoveHead() {
+        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false);
     }
 
     /**
@@ -27,12 +27,10 @@ public class Show extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста").append('\n');
-        else
-            priorityQueue.getCollection().stream().
-                    sorted((city1, city2) -> city2.getName().compareTo(city1.getName())).
-                    forEach(city -> result.append(city.toString()).append('\n'));
-        result.delete(result.length() - 1, result.length());
+        if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
+        else {
+            result.append(priorityQueue.pollFromQueue().toString()).append("удаление элемента успешно завершено");
+        }
         return Serialization.serializeData(result.toString());
     }
 }

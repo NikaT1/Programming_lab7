@@ -86,7 +86,9 @@ public class InputAndOutput implements IOInterface {
     public void output(String s) {
         System.out.println(s);
     }
-
+    public String inputLine() {
+        return scanner.nextLine();
+    }
     public boolean getPrintMessages() {
         return printMessages;
     }

@@ -1,21 +1,23 @@
-package server.commands;
-
+package sharedClasses.commands;
 
 import server.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
+import sharedClasses.City;
 import sharedClasses.Serialization;
 
+import java.util.Comparator;
+
 /**
- * Класс для команды remove_head, которая выводит и удаляет первый элемент из коллекции.
+ * Класс для команды print_ascending, которая выводит элементы коллекции в порядке возрастания.
  */
 
-public class RemoveHead extends Command {
+public class PrintAscending extends Command {
     private static final long serialVersionUID = 147364832874L;
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public RemoveHead() {
-        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false);
+    public PrintAscending() {
+        super("print_ascending", "вывести элементы коллекции в порядке возрастания", 0, false);
     }
 
     /**
@@ -27,10 +29,11 @@ public class RemoveHead extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
-        else {
-            result.append(priorityQueue.pollFromQueue().toString()).append("удаление элемента успешно завершено");
-        }
+        if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста").append('\n');
+        else priorityQueue.getCollection().stream().
+                sorted(Comparator.comparing(City::getName)).
+                forEach(city -> result.append(city.toString()).append('\n'));
+        result.delete(result.length() - 1, result.length());
         return Serialization.serializeData(result.toString());
     }
 }

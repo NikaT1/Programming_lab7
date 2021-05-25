@@ -1,4 +1,4 @@
-package server.commands;
+package sharedClasses.commands;
 
 
 import server.IOForClient;
@@ -43,6 +43,7 @@ public class Add extends Command {
             result.append("В скрипте не указаны значения для создания элемента коллекции. Команда add не выполнена");
         } catch (ClassNotFoundException | SQLException | ParseException e) {
             result.append("Возникла ошибка при попытке соединения с БД, новый объект не добавлен");
+            e.printStackTrace();
         }
         return Serialization.serializeData(result.toString());
     }

@@ -102,9 +102,8 @@ public class PriorityQueueStorage implements StorageInterface<City> {
     }
 
     public void addToCollection(City c) throws SQLException, ParseException, ClassNotFoundException {
-        dataBaseControl.addToDataBase(c);
-        priorityQueue.clear();
-        dataBaseControl.takeAllFromDB(this);
+        c = dataBaseControl.addToDataBase(c);
+        priorityQueue.add(c);
     }
 
     public City pollFromQueue() {
