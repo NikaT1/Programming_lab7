@@ -36,14 +36,16 @@ public class AddIfMax extends Command {
         City city = this.getCity();
         StringBuilder result = new StringBuilder();
         try {
-            if (priorityQueue.getCollection().peek() != null) {
-                if (city.getArea() > priorityQueue.getCollection().peek().getArea()) {
+            synchronized (priorityQueue.getCollection()) {
+                if (priorityQueue.getCollection().stream().max(City::compareTo).isPresent()) {
+                    if (city.getArea() > priorityQueue.getCollection().stream().max(City::compareTo).get().getArea()) {
+                        priorityQueue.addToCollection(city, getUser());
+                        result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
+                    } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
+                } else {
                     priorityQueue.addToCollection(city, getUser());
                     result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
-                } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
-            } else {
-                priorityQueue.addToCollection(city, getUser());
-                result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
+                }
             }
         } catch (ClassNotFoundException | SQLException | ParseException e) {
             result.append("Возникла ошибка при попытке соединения с БД, новый объект не добавлен");

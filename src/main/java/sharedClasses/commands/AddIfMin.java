@@ -34,25 +34,20 @@ public class AddIfMin extends Command {
      * @param priorityQueue   хранимая коллекция.
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
-        PriorityQueue<City> dop = new PriorityQueue<>(10, Comparator.comparingInt(City::getArea));
         StringBuilder result = new StringBuilder();
         try {
-            while (!priorityQueue.getCollection().isEmpty()) {
-                City city1 = priorityQueue.pollFromQueue();
-                dop.add(city1);
-            }
-            City city = this.getCity();
-            if (dop.peek() != null) {
-                if (city.getArea() < dop.peek().getArea()) {
+            synchronized (priorityQueue.getCollection()) {
+                City city = this.getCity();
+                if (priorityQueue.getCollection().stream().min(Comparator.comparingInt(City::getArea)).isPresent()) {
+                    City minCity = priorityQueue.getCollection().stream().min(Comparator.comparingInt(City::getArea)).get();
+                    if (city.getArea() < minCity.getArea()) {
+                        priorityQueue.addToCollection(city, getUser());
+                        result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
+                    } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
+                } else {
                     priorityQueue.addToCollection(city, getUser());
                     result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
-                } else result.append("В коллекцию не добавлен элемент: ").append(city.toString());
-            } else {
-                priorityQueue.addToCollection(city, getUser());
-                result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
-            }
-            while (!dop.isEmpty()) {
-                priorityQueue.getCollection().add(dop.poll());
+                }
             }
         } catch (ClassNotFoundException | SQLException | ParseException e) {
             result.append("Возникла ошибка при попытке соединения с БД, новый объект не добавлен");

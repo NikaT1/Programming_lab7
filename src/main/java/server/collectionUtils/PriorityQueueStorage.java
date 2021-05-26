@@ -7,10 +7,7 @@ import sharedClasses.User;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +29,9 @@ public class PriorityQueueStorage implements StorageInterface<City> {
     /**
      * Коллекция.
      */
-    private PriorityQueue<City> priorityQueue = new PriorityQueue<>(10, (c1, c2) -> c2.getArea() - c1.getArea());
+    private Collection<City> priorityQueue = Collections.synchronizedCollection(new PriorityQueue<>(10, (c1, c2) -> c2.getArea() - c1.getArea()));
+
+    //private PriorityQueue<City> priorityQueue = new PriorityQueue<>(10, (c1, c2) -> c2.getArea() - c1.getArea());
 
     public PriorityQueueStorage(DataBaseControl dataBaseControl) {
         this.dataBaseControl = dataBaseControl;
@@ -55,38 +54,6 @@ public class PriorityQueueStorage implements StorageInterface<City> {
     }
 
     /**
-     * Метод, возвращающий список занятых id.
-     *
-     * @return список занятых id.
-     */
-    public HashSet<Integer> getIdSet() {
-        return idSet;
-    }
-
-    /**
-     * Метод, генерирующий id.
-     *
-     * @return сгенерированное id.
-     */
-    public Integer generateId() throws IllegalStateException {
-        int id;
-        int count = 0;
-        IllegalStateException e = new IllegalStateException();
-        if (Collections.max(idSet) == Integer.MAX_VALUE) {
-            id = 1;
-            count += 1;
-        } else id = Collections.max(idSet) + 1;
-        while (!idSet.add(id)) {
-            if (id == Integer.MAX_VALUE) {
-                id = 1;
-                count += 1;
-            } else id += 1;
-            if (count == 2) throw e;
-        }
-        return id;
-    }
-
-    /**
      * Метод, возвращающий дату создания коллекции.
      *
      * @return дата создания коллекции.
@@ -100,7 +67,7 @@ public class PriorityQueueStorage implements StorageInterface<City> {
      *
      * @return коллекция.
      */
-    public PriorityQueue<City> getCollection() {
+    public Collection<City> getCollection() {
         return priorityQueue;
     }
 
@@ -134,7 +101,9 @@ public class PriorityQueueStorage implements StorageInterface<City> {
     }
 
     public City pollFromQueue() {
-        return priorityQueue.poll();
+        City city = priorityQueue.stream().max(City::compareTo).get();
+        priorityQueue.remove(city);
+        return city;
     }
 
 }

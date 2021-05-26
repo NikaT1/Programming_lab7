@@ -35,20 +35,23 @@ public class UpdateId extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        try {
-            int id = Integer.parseInt(getArgument());
-            List<City> cities = priorityQueue.getCollection().stream().
-                    filter(city -> city.getId() == id).
-                    collect(Collectors.toList());
-            if (cities.size() > 0) {
-                City city = getCity();
-                if (priorityQueue.update(cities.get(0), city, id, getUser())) result.append("обновление элемента успешно завершено");
-                else result.append("обновление элемента не осуществлено!");
-            } else result.append("Элемент с id ").append(id).append(" не существует");
-        } catch (NumberFormatException e) {
-            result.append("неправильный формат id");
-        } catch (SQLException e) {
-            result.append("Возникла ошибка при попытке соединения с БД, объект не обновлен");
+        synchronized (priorityQueue.getCollection()) {
+            try {
+                int id = Integer.parseInt(getArgument());
+                List<City> cities = priorityQueue.getCollection().stream().
+                        filter(city -> city.getId() == id).
+                        collect(Collectors.toList());
+                if (cities.size() > 0) {
+                    City city = getCity();
+                    if (priorityQueue.update(cities.get(0), city, id, getUser()))
+                        result.append("обновление элемента успешно завершено");
+                    else result.append("обновление элемента не осуществлено!");
+                } else result.append("Элемент с id ").append(id).append(" не существует");
+            } catch (NumberFormatException e) {
+                result.append("неправильный формат id");
+            } catch (SQLException e) {
+                result.append("Возникла ошибка при попытке соединения с БД, объект не обновлен");
+            }
         }
         return Serialization.serializeData(result.toString());
     }

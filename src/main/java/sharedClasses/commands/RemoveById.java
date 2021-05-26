@@ -34,20 +34,22 @@ public class RemoveById extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        try {
-            int id = Integer.parseInt(this.getArgument());
-            List<City> cities = priorityQueue.getCollection().stream().
-                    filter(city -> city.getId() == id).
-                    collect(Collectors.toList());
-            if (cities.size() > 0) {
-                boolean flag  = priorityQueue.remove(cities.get(0), getUser());
-                if (flag) result.append("удаление элемента успешно завершено");
-                else result.append("удаление элемента не выполнено!");
-            } else result.append("Элемент с id ").append(id).append(" не существует");
-        } catch (NumberFormatException e) {
-            result.append("неправильный формат id");
-        } catch (SQLException e) {
-            result.append("ошибка при попытке удаления значения из БД; удаление не выполнено");
+        synchronized (priorityQueue.getCollection()) {
+            try {
+                int id = Integer.parseInt(this.getArgument());
+                List<City> cities = priorityQueue.getCollection().stream().
+                        filter(city -> city.getId() == id).
+                        collect(Collectors.toList());
+                if (cities.size() > 0) {
+                    boolean flag = priorityQueue.remove(cities.get(0), getUser());
+                    if (flag) result.append("удаление элемента успешно завершено");
+                    else result.append("удаление элемента не выполнено!");
+                } else result.append("Элемент с id ").append(id).append(" не существует");
+            } catch (NumberFormatException e) {
+                result.append("неправильный формат id");
+            } catch (SQLException e) {
+                result.append("ошибка при попытке удаления значения из БД; удаление не выполнено");
+            }
         }
         return Serialization.serializeData(result.toString());
     }

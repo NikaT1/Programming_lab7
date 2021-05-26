@@ -36,7 +36,9 @@ public class Add extends Command {
         StringBuilder result = new StringBuilder();
         try {
             City city = this.getCity();
-            priorityQueue.addToCollection(city, getUser());
+            synchronized (priorityQueue.getCollection()) {
+                priorityQueue.addToCollection(city, getUser());
+            }
             result.append("В коллекцию добавлен новый элемент: ").append(city.toString());
         } catch (IllegalStateException e) {
             result.append("Ошибка: в коллекции слишком много элементов; объект коллекции не создан");

@@ -32,19 +32,21 @@ public class RemoveHead extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
-        try {
-            if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
-            else {
-                City city = priorityQueue.pollFromQueue();
-                boolean flag = priorityQueue.remove(city, getUser());
-                if (flag) result.append("удаление элемента успешно завершено");
+        synchronized (priorityQueue.getCollection()) {
+            try {
+                if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста");
                 else {
-                    result.append("удаление элемента не выполнено!");
-                    priorityQueue.getCollection().add(city);
+                    City city = priorityQueue.pollFromQueue();
+                    boolean flag = priorityQueue.remove(city, getUser());
+                    if (flag) result.append("удаление элемента успешно завершено");
+                    else {
+                        result.append("удаление элемента не выполнено!");
+                        priorityQueue.getCollection().add(city);
+                    }
                 }
+            } catch (SQLException e) {
+                result.append("ошибка при попытке удаления значения из БД; удаление не выполнено");
             }
-        } catch (SQLException e) {
-            result.append("ошибка при попытке удаления значения из БД; удаление не выполнено");
         }
         return Serialization.serializeData(result.toString());
     }

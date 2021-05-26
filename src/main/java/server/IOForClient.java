@@ -84,9 +84,15 @@ public class IOForClient implements IOInterface {
      *
      * @param commandResult информация для вывода.
      */
-    public void output(byte[] commandResult) throws IOException {
-        DatagramPacket result = new DatagramPacket(commandResult, commandResult.length, addr, port);
-        datagramSocket.send(result);
+    public boolean output(byte[] commandResult) throws IOException {
+        boolean flag = true;
+        try {
+            DatagramPacket result = new DatagramPacket(commandResult, commandResult.length, addr, port);
+            datagramSocket.send(result);
+        }catch(IOException e){
+            flag = false;
+        }
+        return flag;
     }
 
     public void output(String s) {

@@ -30,10 +30,12 @@ public class CommandClear extends Command {
      */
     public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
         String s = "Элементы пользователя успешно удалены";
-        try {
-            priorityQueue.clear(getUser());
-        } catch (SQLException e) {
-            s = "Элементы пользователя не удалены, так как возникла проблема с подключением к БД";
+        synchronized (priorityQueue.getCollection()) {
+            try {
+                priorityQueue.clear(getUser());
+            } catch (SQLException e) {
+                s = "Элементы пользователя не удалены, так как возникла проблема с подключением к БД";
+            }
         }
         return Serialization.serializeData(s);
     }

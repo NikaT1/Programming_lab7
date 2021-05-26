@@ -12,12 +12,17 @@ import java.time.Instant;
 import java.time.ZoneId;
 
 public class DataBaseControl {
-    private final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private final String USER = "postgres";
-    private final String PASS = "Iwanttocreate";
+    private final String URL;
+    private final String USER;
+    private final String PASS;
     private Connection connection;
     private Statement stat;
 
+    public DataBaseControl(String[] args){
+        URL = "jdbc:postgresql://"+args[0]+":"+args[1]+"/"+args[2];
+        USER = args[3];
+        PASS = args[4];
+    }
     public void setConnection() throws SQLException {
         connection = DriverManager.getConnection(URL, USER, PASS);
     }
@@ -98,7 +103,6 @@ public class DataBaseControl {
         while (resultSet.next()) {
             City city = new City();
             city.setId(resultSet.getInt("id"));
-            if (!priorityQueue.getIdSet().add(city.getId())) throw new NumberFormatException();
             city.setName(resultSet.getString("name"));
             city.setCoordinates(new Coordinates(resultSet.getFloat("x"), resultSet.getInt("y")));
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
