@@ -1,8 +1,8 @@
 package sharedClasses.commands;
 
-import server.serverUtils.IOForClient;
-import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.IOInterface;
+import sharedClasses.utils.StorageInterface;
 import sharedClasses.utils.User;
 
 import java.io.Serializable;
@@ -50,7 +50,7 @@ public abstract class Command implements Serializable {
      * @param priorityQueue хранимая коллекция.
      * @throws Exception в случае ошибки при выполнении команды.
      */
-    public abstract byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) throws Exception;
+    public abstract byte[] doCommand(IOInterface ioForClient, StorageInterface<City> priorityQueue) throws Exception;
 
     /**
      * Метод, возвращающий название команды.

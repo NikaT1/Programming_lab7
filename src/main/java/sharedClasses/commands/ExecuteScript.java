@@ -1,8 +1,8 @@
 package sharedClasses.commands;
 
-import server.serverUtils.IOForClient;
-import server.collectionUtils.PriorityQueueStorage;
+import sharedClasses.utils.StorageInterface;
 import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.IOInterface;
 import sharedClasses.utils.Serialization;
 import sharedClasses.utils.User;
 import sharedClasses.utils.UserInput;
@@ -40,7 +40,7 @@ public class ExecuteScript extends Command {
      * @param ioForClient   объект, через который производится ввод/вывод.
      * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) throws Exception {
+    public byte[] doCommand(IOInterface ioForClient, StorageInterface<City> priorityQueue) throws Exception {
         StringBuilder result = new StringBuilder();
         try {
             if (!paths.add(getArgument())) {

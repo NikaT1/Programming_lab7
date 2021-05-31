@@ -1,9 +1,10 @@
 package sharedClasses.commands;
 
 
-import server.serverUtils.IOForClient;
-import server.collectionUtils.PriorityQueueStorage;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.IOInterface;
 import sharedClasses.utils.Serialization;
+import sharedClasses.utils.StorageInterface;
 import sharedClasses.utils.User;
 
 
@@ -28,7 +29,7 @@ public class Help extends Command {
      * @param ioForClient   объект, через который производится ввод/вывод.
      * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOInterface ioForClient, StorageInterface<City> priorityQueue) {
         StringBuilder result = new StringBuilder("Доступные команды:" + '\n');
         for (Command command : getCommandsControl().getCommands().values()) {
             result.append(command.toString()).append('\n');

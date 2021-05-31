@@ -1,9 +1,9 @@
 package sharedClasses.commands;
 
-import server.serverUtils.IOForClient;
-import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.IOInterface;
 import sharedClasses.utils.Serialization;
+import sharedClasses.utils.StorageInterface;
 import sharedClasses.utils.User;
 
 import java.util.Comparator;
@@ -28,7 +28,7 @@ public class PrintAscending extends Command {
      * @param ioForClient   объект, через который производится ввод/вывод.
      * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOInterface ioForClient, StorageInterface<City> priorityQueue) {
         StringBuilder result = new StringBuilder();
         if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста").append('\n');
         else priorityQueue.getCollection().stream().

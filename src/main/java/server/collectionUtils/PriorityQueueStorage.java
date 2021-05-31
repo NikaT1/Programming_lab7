@@ -1,6 +1,7 @@
 package server.collectionUtils;
 
 import server.serverUtils.DataBaseControl;
+import sharedClasses.utils.StorageInterface;
 import sharedClasses.elementsOfCollection.City;
 import sharedClasses.utils.User;
 
