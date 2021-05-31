@@ -1,12 +1,12 @@
-package sharedClasses;
+package sharedClasses.utils;
 
 import java.io.Serializable;
 
 public class WrapperForObjects implements Serializable {
-    private Object object;
-    private String description;
+    private final Object object;
+    private final String description;
 
-    public WrapperForObjects(Object object, String description){
+    public WrapperForObjects(Object object, String description) {
         this.object = object;
         this.description = description;
     }

@@ -1,4 +1,4 @@
-package server;
+package server.serverUtils;
 
 import server.collectionUtils.PriorityQueueStorage;
 import sharedClasses.commands.Command;

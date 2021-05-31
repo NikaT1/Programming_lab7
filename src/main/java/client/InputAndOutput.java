@@ -1,6 +1,6 @@
 package client;
 
-import sharedClasses.IOInterface;
+import sharedClasses.utils.IOInterface;
 
 import java.util.Scanner;
 
@@ -86,9 +86,11 @@ public class InputAndOutput implements IOInterface {
     public void output(String s) {
         System.out.println(s);
     }
+
     public String inputLine() {
         return scanner.nextLine();
     }
+
     public boolean getPrintMessages() {
         return printMessages;
     }

@@ -1,10 +1,10 @@
 package sharedClasses.commands;
 
 
-import server.IOForClient;
+import server.serverUtils.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
-import sharedClasses.Serialization;
-import sharedClasses.User;
+import sharedClasses.utils.Serialization;
+import sharedClasses.utils.User;
 
 /**
  * Класс для команды info, которая выводит в стандартный поток вывода информацию о коллекции.

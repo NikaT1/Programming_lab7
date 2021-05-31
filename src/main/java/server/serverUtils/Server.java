@@ -1,9 +1,9 @@
-package server;
+package server.serverUtils;
 
 import server.collectionUtils.PriorityQueueStorage;
-import sharedClasses.Serialization;
-import sharedClasses.User;
-import sharedClasses.WrapperForObjects;
+import sharedClasses.utils.Serialization;
+import sharedClasses.utils.User;
+import sharedClasses.utils.WrapperForObjects;
 import sharedClasses.commands.Command;
 
 import java.io.IOException;

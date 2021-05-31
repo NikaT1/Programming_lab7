@@ -1,11 +1,11 @@
 package sharedClasses.commands;
 
 
-import server.IOForClient;
+import server.serverUtils.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
-import sharedClasses.City;
-import sharedClasses.Serialization;
-import sharedClasses.User;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.Serialization;
+import sharedClasses.utils.User;
 
 /**
  * Класс для команды average_of_meters_above_sea_level, которая выводит среднее значение поля metersAboveSeaLevel

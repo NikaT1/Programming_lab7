@@ -1,8 +1,12 @@
 package client;
 
-import sharedClasses.*;
 import sharedClasses.commands.Command;
 import sharedClasses.commands.CommandsControl;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.Serialization;
+import sharedClasses.utils.User;
+import sharedClasses.utils.UserInput;
+import sharedClasses.utils.WrapperForObjects;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -26,6 +30,7 @@ public class Client {
     private final UserInput userInput;
     private final InputAndOutput inputAndOutput;
     private final Scanner scanner;
+    private final String host = "localhost";
     private User user;
 
     public Client() {
@@ -68,7 +73,7 @@ public class Client {
 
             try {
                 client.initialize();
-                client.connect("localhost", port);
+                client.connect(client.host, port);
                 flag = false;
                 client.user = client.connectToDB();
                 client.commandsControl = new CommandsControl(client.user);

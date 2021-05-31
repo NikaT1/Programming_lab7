@@ -41,7 +41,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>server.Server</mainClass>
+                                    <mainClass>server.serverUtils.Server</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

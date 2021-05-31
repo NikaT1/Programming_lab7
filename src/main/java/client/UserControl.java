@@ -1,6 +1,6 @@
 package client;
 
-import sharedClasses.User;
+import sharedClasses.utils.User;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -9,8 +9,7 @@ import java.security.NoSuchAlgorithmException;
 public class UserControl {
 
     public User logIn(InputAndOutput inputAndOutput, boolean newUser) throws NoSuchAlgorithmException {
-        User user = new User(readLogin(inputAndOutput, newUser), readPassword(inputAndOutput, newUser));
-        return user;
+        return new User(readLogin(inputAndOutput, newUser), readPassword(inputAndOutput, newUser));
     }
 
     public String readPassword(InputAndOutput inputAndOutput, boolean newUser) throws NoSuchAlgorithmException {
@@ -26,7 +25,7 @@ public class UserControl {
         return password;
     }
 
-    public String getTypeOfUser (boolean newUser){
+    public String getTypeOfUser(boolean newUser) {
         String type;
         if (newUser) type = "newUser";
         else type = "oldUser";
@@ -35,8 +34,7 @@ public class UserControl {
 
     private String getEncodedPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
-        String encodedPassword = getEncodedString(messageDigest.digest(("*&^mVLCf(#" + password).getBytes(StandardCharsets.UTF_8)));
-        return encodedPassword;
+        return getEncodedString(messageDigest.digest(("*&^mVLCf(#" + password).getBytes(StandardCharsets.UTF_8)));
     }
 
     private String getEncodedString(byte[] bytes) {

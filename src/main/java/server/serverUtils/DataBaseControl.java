@@ -1,8 +1,12 @@
-package server;
+package server.serverUtils;
 
 import org.postgresql.util.PSQLException;
 import server.collectionUtils.PriorityQueueStorage;
-import sharedClasses.*;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.elementsOfCollection.Climate;
+import sharedClasses.elementsOfCollection.Coordinates;
+import sharedClasses.elementsOfCollection.Human;
+import sharedClasses.utils.User;
 
 import java.sql.*;
 import java.text.DateFormat;
@@ -18,11 +22,12 @@ public class DataBaseControl {
     private Connection connection;
     private Statement stat;
 
-    public DataBaseControl(String[] args){
-        URL = "jdbc:postgresql://"+args[0]+":"+args[1]+"/"+args[2];
+    public DataBaseControl(String[] args) {
+        URL = "jdbc:postgresql://" + args[0] + ":" + args[1] + "/" + args[2];
         USER = args[3];
         PASS = args[4];
     }
+
     public void setConnection() throws SQLException {
         connection = DriverManager.getConnection(URL, USER, PASS);
     }
@@ -128,8 +133,9 @@ public class DataBaseControl {
         }
         stat.close();
     }
+
     public String addUser(User user) throws SQLException {
-        String result = "Новый пользователь не добавлен, попробуйте придумать другой логин";
+        String result;
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users VALUES (?,?);");
             statement.setString(1, user.getPassword());
@@ -137,11 +143,12 @@ public class DataBaseControl {
             int count = statement.executeUpdate();
             if (count > 0) result = "Новый пользователь добавлен";
             else result = "Новый пользователь не добавлен, попробуйте придумать другой логин";
-        } catch(PSQLException e){
+        } catch (PSQLException e) {
             result = "Новый пользователь не добавлен, попробуйте придумать другой логин";
         }
         return result;
     }
+
     public String checkUser(User user) throws SQLException {
         String result = "Пользователь не найден";
         PreparedStatement statement = connection.prepareStatement("SELECT password FROM users WHERE login = ?");
@@ -149,16 +156,18 @@ public class DataBaseControl {
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
             result = "Пользователь найден";
-            if (resultSet.getString(1).equals(user.getPassword())) result+=", вход выполнен";
-            else result+=", неверный пароль!";
+            if (resultSet.getString(1).equals(user.getPassword())) result += ", вход выполнен";
+            else result += ", неверный пароль!";
         }
         return result;
     }
+
     public void clear(User user) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM city WHERE owner = ?");
         statement.setString(1, user.getLogin());
         statement.executeUpdate();
     }
+
     public boolean remove(City city, User user) throws SQLException {
         boolean flag = false;
         PreparedStatement statement = connection.prepareStatement("DELETE FROM city WHERE id = ? AND owner = ?");
@@ -171,8 +180,8 @@ public class DataBaseControl {
 
     public boolean update(City city, int id, User user) throws SQLException {
         boolean flag = false;
-        PreparedStatement statement = connection.prepareStatement("UPDATE city SET name = ?, x = ?,"+
-                "y = ?, creationDate = ?, area = ?, population = ?, metersAboveSeaLevel = ?,"+
+        PreparedStatement statement = connection.prepareStatement("UPDATE city SET name = ?, x = ?," +
+                "y = ?, creationDate = ?, area = ?, population = ?, metersAboveSeaLevel = ?," +
                 "establishmentDate = ?, agglomeration = ?, climate = ?, age = ? WHERE id = ? AND owner = ?");
         statement.setString(1, city.getName());
         statement.setFloat(2, city.getCoordinates().getX());

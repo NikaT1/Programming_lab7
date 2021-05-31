@@ -1,8 +1,8 @@
 package server.collectionUtils;
 
-import server.DataBaseControl;
-import sharedClasses.City;
-import sharedClasses.User;
+import server.serverUtils.DataBaseControl;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.User;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -23,19 +23,12 @@ public class PriorityQueueStorage implements StorageInterface<City> {
      */
     private final LocalDate creationDate;
     /**
-     * Список id.
-     */
-    private final HashSet<Integer> idSet;
-    /**
      * Коллекция.
      */
     private Collection<City> priorityQueue = Collections.synchronizedCollection(new PriorityQueue<>(10, (c1, c2) -> c2.getArea() - c1.getArea()));
 
-    //private PriorityQueue<City> priorityQueue = new PriorityQueue<>(10, (c1, c2) -> c2.getArea() - c1.getArea());
-
     public PriorityQueueStorage(DataBaseControl dataBaseControl) {
         this.dataBaseControl = dataBaseControl;
-        idSet = new HashSet<>();
         creationDate = LocalDate.now();
     }
 

@@ -1,4 +1,9 @@
-package sharedClasses;
+package sharedClasses.utils;
+
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.elementsOfCollection.Climate;
+import sharedClasses.elementsOfCollection.Coordinates;
+import sharedClasses.elementsOfCollection.Human;
 
 import java.text.DateFormat;
 import java.text.ParseException;

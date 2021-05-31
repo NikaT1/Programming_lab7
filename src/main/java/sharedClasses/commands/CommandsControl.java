@@ -1,6 +1,6 @@
 package sharedClasses.commands;
 
-import sharedClasses.User;
+import sharedClasses.utils.User;
 
 import java.io.Serializable;
 import java.util.HashMap;

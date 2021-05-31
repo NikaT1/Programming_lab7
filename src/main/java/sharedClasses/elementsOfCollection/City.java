@@ -1,4 +1,4 @@
-package sharedClasses;
+package sharedClasses.elementsOfCollection;
 
 import java.io.Serializable;
 import java.text.DateFormat;

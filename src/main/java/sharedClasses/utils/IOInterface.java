@@ -1,4 +1,4 @@
-package sharedClasses;
+package sharedClasses.utils;
 
 import java.util.Scanner;
 

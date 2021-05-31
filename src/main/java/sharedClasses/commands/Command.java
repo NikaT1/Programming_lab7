@@ -1,9 +1,9 @@
 package sharedClasses.commands;
 
-import server.IOForClient;
+import server.serverUtils.IOForClient;
 import server.collectionUtils.PriorityQueueStorage;
-import sharedClasses.City;
-import sharedClasses.User;
+import sharedClasses.elementsOfCollection.City;
+import sharedClasses.utils.User;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
-package server;
+package server.serverUtils;
 
-import sharedClasses.IOInterface;
-import sharedClasses.Serialization;
+import sharedClasses.utils.IOInterface;
+import sharedClasses.utils.Serialization;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -84,12 +84,12 @@ public class IOForClient implements IOInterface {
      *
      * @param commandResult информация для вывода.
      */
-    public boolean output(byte[] commandResult) throws IOException {
+    public boolean output(byte[] commandResult) {
         boolean flag = true;
         try {
             DatagramPacket result = new DatagramPacket(commandResult, commandResult.length, addr, port);
             datagramSocket.send(result);
-        }catch(IOException e){
+        } catch (IOException e) {
             flag = false;
         }
         return flag;
@@ -97,7 +97,10 @@ public class IOForClient implements IOInterface {
 
     public void output(String s) {
         byte[] bytes = Serialization.serializeData(s);
-        DatagramPacket result = new DatagramPacket(bytes, bytes.length, addr, port);
+        DatagramPacket result = null;
+        if (bytes != null) {
+            result = new DatagramPacket(bytes, bytes.length, addr, port);
+        }
         try {
             datagramSocket.send(result);
         } catch (IOException e) {
