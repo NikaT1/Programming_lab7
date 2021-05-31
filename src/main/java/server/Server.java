@@ -5,7 +5,6 @@ import sharedClasses.Serialization;
 import sharedClasses.User;
 import sharedClasses.WrapperForObjects;
 import sharedClasses.commands.Command;
-import sharedClasses.commands.CommandsControl;
 
 import java.io.IOException;
 import java.net.*;
@@ -40,7 +39,8 @@ public class Server {
         if (args.length == 5) {
             server.args = args;
             server.run();
-        } else log.log(Level.SEVERE, "Неверный формат ввода аргументов: <host>, <port>, <database>, <user>, <password>");
+        } else
+            log.log(Level.SEVERE, "Неверный формат ввода аргументов: <host>, <port>, <database>, <user>, <password>");
     }
 
     public void run() {
@@ -65,7 +65,6 @@ public class Server {
             System.exit(-1);
         } catch (SQLException e) {
             log.log(Level.SEVERE, "Ошибка при подключении к базе данных");
-            e.printStackTrace();
             System.exit(-1);
         } catch (Exception e) {
             log.log(Level.SEVERE, "Ошибка при чтении из базы данных");
@@ -110,7 +109,7 @@ public class Server {
 
     public WrapperForObjects readClientRequest() {
         try {
-            datagramSocket.setSoTimeout(6000);
+            datagramSocket.setSoTimeout(100000);
             byte[] bytes = new byte[100000];
             log.log(Level.INFO, "Чтение сообщения от пользователя");
             bytes = ioForClient.input(bytes);
@@ -130,7 +129,7 @@ public class Server {
         if (object.getDescription().equals("Command")) {
             Command command = (Command) object.getObject();
             log.log(Level.INFO, "Получение результата работы команды и отправка клиенту результата работы команды");
-            CommandExecutor commandExecutor = new CommandExecutor(command, ioForClient, new CommandsControl(command.getUser()), priorityQueue);
+            CommandExecutor commandExecutor = new CommandExecutor(command, ioForClient, priorityQueue);
             new Thread(commandExecutor).start();
         } else {
             log.log(Level.INFO, "Получение результата проверки пользователя/добавления пользователя");

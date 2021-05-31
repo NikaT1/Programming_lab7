@@ -15,18 +15,17 @@ public class Show extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public Show(User user) {
-        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении", 0, false, user);
+    public Show(User user, CommandsControl commandsControl) {
+        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении", 0, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста").append('\n');
         else

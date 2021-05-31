@@ -22,18 +22,17 @@ public class UpdateId extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public UpdateId(User user) {
-        super("update id {element}", "обновить значение элемента коллекции, id которого равен заданному", 1, true, user);
+    public UpdateId(User user, CommandsControl commandsControl) {
+        super("update id {element}", "обновить значение элемента коллекции, id которого равен заданному", 1, true, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         synchronized (priorityQueue.getCollection()) {
             try {

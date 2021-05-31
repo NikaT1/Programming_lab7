@@ -19,6 +19,7 @@ import java.util.Scanner;
  */
 
 public class ExecuteScript extends Command {
+
     private static final long serialVersionUID = 147364832874L;
     /**
      * Поле, содержащее список файлов.
@@ -28,23 +29,18 @@ public class ExecuteScript extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public ExecuteScript(User user) {
-        super("execute_script file_name", "считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", 1, false, user);
+    public ExecuteScript(User user, CommandsControl commandsControl) {
+        super("execute_script file_name", "считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", 1, false, user, commandsControl);
         paths = new HashSet<>();
-    }
-
-    public HashSet<String> getPaths() {
-        return paths;
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) throws Exception {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) throws Exception {
         StringBuilder result = new StringBuilder();
         try {
             if (!paths.add(getArgument())) {
@@ -61,6 +57,7 @@ public class ExecuteScript extends Command {
                 ioForClient.setScanner(scanner);
                 UserInput userInput = new UserInput(ioForClient);
                 while (scanner.hasNext()) {
+                    CommandsControl commandsControl = getCommandsControl();
                     String[] s = scanner.nextLine().split(" ");
                     if (commandsControl.getCommands().containsKey(s[0])) {
                         Command currentCommand = commandsControl.getCommands().get(s[0]);
@@ -72,7 +69,7 @@ public class ExecuteScript extends Command {
                             city.setOwner(getUser().getLogin());
                             currentCommand.setCity(city);
                         }
-                        currentCommand.doCommand(ioForClient, commandsControl, priorityQueue);
+                        currentCommand.doCommand(ioForClient, priorityQueue);
                     } else {
                         paths.clear();
                         throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, так как найдена несуществующая команда");

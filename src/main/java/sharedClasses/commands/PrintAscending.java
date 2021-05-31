@@ -18,18 +18,17 @@ public class PrintAscending extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public PrintAscending(User user) {
-        super("print_ascending", "вывести элементы коллекции в порядке возрастания", 0, false, user);
+    public PrintAscending(User user, CommandsControl commandsControl) {
+        super("print_ascending", "вывести элементы коллекции в порядке возрастания", 0, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         if (priorityQueue.getCollection().isEmpty()) result.append("Коллекция пуста").append('\n');
         else priorityQueue.getCollection().stream().

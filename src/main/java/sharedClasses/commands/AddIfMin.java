@@ -22,18 +22,17 @@ public class AddIfMin extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AddIfMin(User user) {
-        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции", 0, true, user);
+    public AddIfMin(User user, CommandsControl commandsControl) {
+        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции", 0, true, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         try {
             synchronized (priorityQueue.getCollection()) {

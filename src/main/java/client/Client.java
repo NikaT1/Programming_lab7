@@ -48,23 +48,24 @@ public class Client {
     public static void main(String[] args) {
         Client client = new Client();
         boolean flag = true;
-        client.inputAndOutput.output("Введите порт:");
-        int port = 0;
-        while (true) {
-            try {
-                if (client.inputAndOutput.getScanner().hasNextLine())
-                    port = Integer.parseInt(client.inputAndOutput.getScanner().nextLine());
-                else System.exit(1);
-                if (port < 0 || port > 65535) {
-                    client.inputAndOutput.output("Неверный формат порта, повторите ввод:");
-                    continue;
-                }
-                break;
-            } catch (IllegalArgumentException e) {
-                client.inputAndOutput.output("Неверный формат порта, повторите ввод:");
-            }
-        }
         while (flag) {
+            client.inputAndOutput.output("Введите порт:");
+            int port = 0;
+            while (true) {
+                try {
+                    if (client.inputAndOutput.getScanner().hasNextLine())
+                        port = Integer.parseInt(client.inputAndOutput.getScanner().nextLine());
+                    else System.exit(1);
+                    if (port < 0 || port > 65535) {
+                        client.inputAndOutput.output("Неверный формат порта, повторите ввод:");
+                        continue;
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    client.inputAndOutput.output("Неверный формат порта, повторите ввод:");
+                }
+            }
+
             try {
                 client.initialize();
                 client.connect("localhost", port);

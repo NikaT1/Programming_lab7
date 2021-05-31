@@ -67,7 +67,7 @@ public class DataBaseControl {
 
     public void createSequence() throws SQLException {
         stat = connection.createStatement();
-        String creation = "CREATE SEQUENCE IF NOT EXISTS idgeneration START 1 AS integer ;";
+        String creation = "CREATE SEQUENCE IF NOT EXISTS idgeneration START 1;";
         stat.executeUpdate(creation);
         stat.close();
     }
@@ -75,18 +75,18 @@ public class DataBaseControl {
     public void createTableCities() throws SQLException {
         stat = connection.createStatement();
         String creation = "CREATE TABLE IF NOT EXISTS city (\n" +
-                "id INT PRIMARY KEY CHECK(id > 0) DEFAULT nextval('idgeneration'),\n" +
+                "id INTEGER PRIMARY KEY CHECK(id > 0) DEFAULT nextval('idgeneration'),\n" +
                 "name VARCHAR(255) NOT NULL,\n" +
-                "x REAL NOT NULL,\n" +
-                "y INT NOT NULL,\n" +
+                "x REAL NOT NULL CHECK(x > -742),\n" +
+                "y INTEGER NOT NULL CHECK(y > -989),\n" +
                 "creationDate VARCHAR(255) NOT NULL,\n" +
-                "area INT NOT NULL,\n" +
-                "population BIGINT NOT NULL,\n" +
+                "area INTEGER NOT NULL CHECK(area > 0),\n" +
+                "population BIGINT NOT NULL CHECK(population > 0),\n" +
                 "metersAboveSeaLevel BIGINT,\n" +
                 "establishmentDate VARCHAR(255),\n" +
-                "agglomeration INT,\n" +
+                "agglomeration INTEGER,\n" +
                 "climate VARCHAR(255),\n" +
-                "age INT,\n" +
+                "age INTEGER CHECK(age > 0),\n" +
                 "owner VARCHAR(255));";
         stat.executeUpdate(creation);
         stat.close();
@@ -136,6 +136,7 @@ public class DataBaseControl {
             statement.setString(2, user.getLogin());
             int count = statement.executeUpdate();
             if (count > 0) result = "Новый пользователь добавлен";
+            else result = "Новый пользователь не добавлен, попробуйте придумать другой логин";
         } catch(PSQLException e){
             result = "Новый пользователь не добавлен, попробуйте придумать другой логин";
         }

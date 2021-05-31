@@ -24,7 +24,7 @@ public class City implements Serializable, Comparable {
      */
     private Coordinates coordinates;
     /**
-     * Дата создания объекта. Поле не может быть null, Значение этого поля должно генерироваться автоматически Поле не может быть null.
+     * Дата создания объекта. Поле не может быть null, Значение этого поля должно генерироваться автоматически.
      */
     private LocalDate creationDate;
     /**
@@ -281,7 +281,7 @@ public class City implements Serializable, Comparable {
                 ", дата основания: " + getEstablishmentDate() +
                 ", площадь агломерации: " + getAgglomeration() +
                 ", климат: " + getClimate() + ", возраст губернатора: " +
-                getGovernor().getAge() + ".";
+                getGovernor().getAge() + ", создатель: " + getOwner() + ".";
     }
 
     @Override

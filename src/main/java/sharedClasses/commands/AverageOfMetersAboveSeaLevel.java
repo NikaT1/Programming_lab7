@@ -14,21 +14,21 @@ import sharedClasses.User;
 
 public class AverageOfMetersAboveSeaLevel extends Command {
     private static final long serialVersionUID = 147364832874L;
+
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public AverageOfMetersAboveSeaLevel(User user) {
-        super("average_of_meters_above_sea_level", "вывести среднее значение поля metersAboveSeaLevel для всех элементов коллекции", 0, false, user);
+    public AverageOfMetersAboveSeaLevel(User user, CommandsControl commandsControl) {
+        super("average_of_meters_above_sea_level", "вывести среднее значение поля metersAboveSeaLevel для всех элементов коллекции", 0, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         if (priorityQueue.getCollection().isEmpty())
             result.append("Коллекция пуста; среднее значение поля metersAboveSeaLevel установить невозможно");

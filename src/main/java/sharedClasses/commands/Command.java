@@ -26,6 +26,7 @@ public abstract class Command implements Serializable {
     private City city;
     private final boolean needCity;
     private final User user;
+    private final CommandsControl commandsControl;
 
     /**
      * Конструктор.
@@ -33,23 +34,23 @@ public abstract class Command implements Serializable {
      * @param name            название команды.
      * @param someInformation дополнительная информация о команде.
      */
-    public Command(String name, String someInformation, int amountOfArguments, boolean needCity, User user) {
+    public Command(String name, String someInformation, int amountOfArguments, boolean needCity, User user, CommandsControl commandsControl) {
         this.name = name;
         this.someInformation = someInformation;
         this.amountOfArguments = amountOfArguments;
         this.needCity = needCity;
         this.user = user;
+        this.commandsControl = commandsControl;
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      * @throws Exception в случае ошибки при выполнении команды.
      */
-    public abstract byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) throws Exception;
+    public abstract byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) throws Exception;
 
     /**
      * Метод, возвращающий название команды.
@@ -83,6 +84,10 @@ public abstract class Command implements Serializable {
 
     public City getCity() {
         return city;
+    }
+
+    public CommandsControl getCommandsControl() {
+        return commandsControl;
     }
 
     public boolean isNeedCity() {

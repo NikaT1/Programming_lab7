@@ -19,18 +19,17 @@ public class RemoveHead extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public RemoveHead(User user) {
-        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false, user);
+    public RemoveHead(User user, CommandsControl commandsControl) {
+        super("remove_head", "вывести первый элемент коллекции и удалить его", 0, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         synchronized (priorityQueue.getCollection()) {
             try {

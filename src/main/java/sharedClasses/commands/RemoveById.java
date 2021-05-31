@@ -21,18 +21,17 @@ public class RemoveById extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public RemoveById(User user) {
-        super("remove_by_id id", "удалить элемент из коллекции по его id", 1, false, user);
+    public RemoveById(User user, CommandsControl commandsControl) {
+        super("remove_by_id id", "удалить элемент из коллекции по его id", 1, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         StringBuilder result = new StringBuilder();
         synchronized (priorityQueue.getCollection()) {
             try {

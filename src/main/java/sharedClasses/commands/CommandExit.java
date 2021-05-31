@@ -16,18 +16,17 @@ public class CommandExit extends Command {
     /**
      * Конструктор, присваивающий имя и дополнительную информацию о команде.
      */
-    public CommandExit(User user) {
-        super("exit", "завершить программу (без сохранения в файл)", 0, false, user);
+    public CommandExit(User user, CommandsControl commandsControl) {
+        super("exit", "завершить программу (без сохранения в файл)", 0, false, user, commandsControl);
     }
 
     /**
      * Метод, исполняющий команду.
      *
-     * @param ioForClient     объект, через который производится ввод/вывод.
-     * @param commandsControl объект, содержащий объекты доступных команд.
-     * @param priorityQueue   хранимая коллекция.
+     * @param ioForClient   объект, через который производится ввод/вывод.
+     * @param priorityQueue хранимая коллекция.
      */
-    public byte[] doCommand(IOForClient ioForClient, CommandsControl commandsControl, PriorityQueueStorage priorityQueue) {
+    public byte[] doCommand(IOForClient ioForClient, PriorityQueueStorage priorityQueue) {
         String result = "Работа приложения завершается";
         return Serialization.serializeData(result);
     }
