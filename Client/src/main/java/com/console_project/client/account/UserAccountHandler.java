@@ -12,7 +12,7 @@ public class UserAccountHandler {
     private final UserAccount userAccount;
     private final ConnectionHandler connectionHandler;
 
-    public CommandResponse authorizeUser() throws IOException {
+    public CommandResponse authenticateUser() throws IOException {
         if (userAccount.isNewAccount()) {
             return createAccount();
         } else {

@@ -15,7 +15,6 @@ import com.console_project.shared.model.City;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Scanner;
 
 /**
@@ -66,7 +65,7 @@ public class Client {
                 connectionHandler.reconnection();
             }
 
-            CommandResponse commandResponse = userAccountHandler.authorizeUser();
+            CommandResponse commandResponse = userAccountHandler.authenticateUser();
             if (commandResponse.status().equals("ERROR")) {
                 System.out.println(commandResponse.message());
                 stop();
