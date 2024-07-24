@@ -19,12 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     private String USER;
     private String PASS;
     private Connection connection;
-
-    public UserRepositoryImpl(String[] args) throws SQLException {
-        init();
-    }
-
-    private void init() throws SQLException {
+    public void init() throws SQLException {
         //Class.forName("org.postgresql.Driver");
         connection = DriverManager.getConnection(URL, USER, PASS);
         createUsersTable();

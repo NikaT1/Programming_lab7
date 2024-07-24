@@ -39,6 +39,7 @@ public class RequestHandler<T> implements Runnable {
                 socketChannel.read(buffer);
                 UserRequest<T> request = requestSerializer.deserializeObject(buffer.array());
                 Thread requestTask = new Thread(() -> processRequest(request));
+                requestTask.start();
                 requestTask.join();
             }
         } catch (IOException e) {

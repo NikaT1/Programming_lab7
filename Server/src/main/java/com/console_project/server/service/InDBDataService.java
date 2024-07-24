@@ -1,6 +1,5 @@
 package com.console_project.server.service;
 
-import com.console_project.server.exception.TooMuchElementsException;
 import com.console_project.server.repository.DataRepository;
 import com.console_project.shared.model.City;
 import lombok.Getter;
@@ -107,7 +106,7 @@ public class InDBDataService implements DataService<City> {
     }
 
     @Override
-    public boolean addElementIfMin(City city) throws TooMuchElementsException {
+    public boolean addElementIfMin(City city) {
         OptionalInt minArea;
         synchronized (collection) {
             minArea = collection.stream().mapToInt(City::getArea).min();
@@ -119,7 +118,7 @@ public class InDBDataService implements DataService<City> {
     }
 
     @Override
-    public boolean addElementIfMax(City city) throws TooMuchElementsException {
+    public boolean addElementIfMax(City city) {
         OptionalInt maxArea;
         synchronized (collection) {
             maxArea = collection.stream().mapToInt(City::getArea).max();

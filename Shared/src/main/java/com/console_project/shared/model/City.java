@@ -39,7 +39,7 @@ public class City implements Serializable {
     /**
      * Размер территории города. Значение поля должно быть больше 0.
      */
-    private int area = 0;
+    private int area;
     /**
      * Численность населения города. Значение поля должно быть больше 0.
      */

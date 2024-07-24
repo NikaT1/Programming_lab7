@@ -1,7 +1,5 @@
 package com.console_project.server.service;
 
-import com.console_project.server.exception.TooMuchElementsException;
-
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -17,7 +15,7 @@ public interface DataService<T> {
 
     Stream<T> getCollectionStream();
 
-    boolean addElement(T t) throws TooMuchElementsException;
+    boolean addElement(T t);
 
     boolean deleteById(int id);
 
@@ -27,9 +25,9 @@ public interface DataService<T> {
 
     boolean updateById(int id, T t);
 
-    boolean addElementIfMax(T t) throws TooMuchElementsException;
+    boolean addElementIfMax(T t);
 
-    boolean addElementIfMin(T t) throws TooMuchElementsException;
+    boolean addElementIfMin(T t);
 
     double averageOfMetersAboveSeaLevel();
 

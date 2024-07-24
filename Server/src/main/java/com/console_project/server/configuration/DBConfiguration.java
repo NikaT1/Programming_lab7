@@ -20,7 +20,7 @@ public class DBConfiguration {
             "login VARCHAR(255)PRIMARY KEY);";
     public final static String MAIN_TABLE_UPDATE = "UPDATE city SET name = ?, x = ?," +
             "y = ?, creationDate = ?, area = ?, population = ?, metersAboveSeaLevel = ?," +
-            "establishmentDate = ?, agglomeration = ?, climate = ?, age = ? WHERE id = ? AND owner = ?";
+            "establishmentDate = ?, agglomeration = ?, climate = ?, age = ? WHERE owner = ? AND id = ?";
     public final static String MAIN_TABLE_DELETE = "DELETE FROM city WHERE id = ? AND owner = ?";
     public final static String MAIN_TABLE_DELETE_ALL = "DELETE FROM city WHERE owner = ?";
     public final static String MAIN_TABLE_INSERT = "INSERT INTO city (name, x, y, creationdate," +

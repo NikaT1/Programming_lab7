@@ -1,7 +1,6 @@
 package com.console_project.server.service;
 
 
-import com.console_project.server.exception.TooMuchElementsException;
 import com.console_project.shared.model.City;
 import lombok.Getter;
 
@@ -50,7 +49,7 @@ public class InMemoryDataService implements DataService<City> {
         return idSet.add(city.getId());
     }
 
-    private Integer generateId() throws TooMuchElementsException {
+    private Integer generateId() {
         int id;
         int count = 0;
         if (!idSet.isEmpty() && Collections.max(idSet) == Integer.MAX_VALUE) {
@@ -62,7 +61,7 @@ public class InMemoryDataService implements DataService<City> {
                 id = 1;
                 count++;
             } else id++;
-            if (count == 2) throw new TooMuchElementsException();
+            // if (count == 2) throw ;
         }
         return id;
     }
@@ -73,7 +72,7 @@ public class InMemoryDataService implements DataService<City> {
     }
 
     @Override
-    public boolean addElement(City city) throws TooMuchElementsException {
+    public boolean addElement(City city) {
         city.setId(generateId());
         priorityQueue.add(city);
         return false;
@@ -119,7 +118,7 @@ public class InMemoryDataService implements DataService<City> {
     }
 
     @Override
-    public boolean addElementIfMin(City city) throws TooMuchElementsException {
+    public boolean addElementIfMin(City city) {
         OptionalInt min = priorityQueue.stream().mapToInt(City::getArea).min();
         if (min.isEmpty() || min.getAsInt() > city.getArea()) {
             addElement(city);
@@ -129,7 +128,7 @@ public class InMemoryDataService implements DataService<City> {
     }
 
     @Override
-    public boolean addElementIfMax(City city) throws TooMuchElementsException {
+    public boolean addElementIfMax(City city) {
         if (priorityQueue.peek() == null || priorityQueue.peek().getArea() < city.getArea()) {
             addElement(city);
             return true;

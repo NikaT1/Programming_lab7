@@ -17,7 +17,7 @@ public class IOutilUser implements IOutil<UserAccount> {
     @Override
     public UserAccount readObject() {
         boolean hasAccount = readAnswer(INIT_MESSAGE);
-        return new UserAccount(new User(readUsername(), getEncodedPassword(readPassword())), hasAccount);
+        return new UserAccount(new User(readUsername(), getEncodedPassword(readPassword())), !hasAccount);
     }
 
     private String readUsername() {

@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -27,11 +28,7 @@ public class CityDataRepository implements DataRepository<City> {
     private String PASS;
     private Connection connection;
 
-    public CityDataRepository() throws SQLException {
-        init();
-    }
-
-    private void init() throws SQLException {
+    public void init() throws SQLException {
         //Class.forName("org.postgresql.Driver");
         connection = DriverManager.getConnection(URL, USER, PASS);
         createSequence();
@@ -90,8 +87,8 @@ public class CityDataRepository implements DataRepository<City> {
                         .build();
                 collection.add(city);
             }
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, STATEMENT_ERROR_MESSAGE);
+        } catch (SQLException | ParseException e) {
+            log.log(Level.SEVERE, STATEMENT_ERROR_MESSAGE + e.getMessage());
         }
         return collection;
     }
@@ -123,7 +120,7 @@ public class CityDataRepository implements DataRepository<City> {
     public boolean update(int id, City city) {
         try (PreparedStatement statement = connection.prepareStatement(MAIN_TABLE_UPDATE)) {
             fillStatementWithObject(city, statement);
-            statement.setInt(12, id);
+            statement.setInt(13, id);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             log.log(Level.SEVERE, STATEMENT_ERROR_MESSAGE);
@@ -152,6 +149,6 @@ public class CityDataRepository implements DataRepository<City> {
         statement.setString(10, city.getClimate().toString());
         if (city.getGovernor().getAge() != null) statement.setInt(11, city.getGovernor().getAge());
         else statement.setNull(11, Types.INTEGER);
-        statement.setString(13, city.getOwner());
+        statement.setString(12, city.getOwner());
     }
 }

@@ -15,6 +15,7 @@ import com.console_project.shared.model.City;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Scanner;
 
 /**
@@ -51,30 +52,39 @@ public class Client {
             return;
         }
 
-        IOutil<City> ioUtil = new IOutilCity(new Scanner(System.in));
+
         UserAccount userAccount = new IOutilUser(new Scanner(System.in)).readObject();
+        IOutil<City> ioUtil = new IOutilCity(new Scanner(System.in), userAccount.user());
         UserInput<City> userInput = new UserInput<>(ioUtil, userAccount.user());
         UserAccountHandler userAccountHandler = new UserAccountHandler(userAccount, connectionHandler);
 
-        CommandResponse commandResponse = userAccountHandler.authorizeUser();
-        if (commandResponse.status().equals("ERROR")) {
-            System.out.println(commandResponse.message());
-            stop();
-        }
+        boolean reconnect = false;
 
-        while (isRunning) {
-            try {
+        try {
+            if (reconnect) {
+                reconnect = false;
+                connectionHandler.reconnection();
+            }
+
+            CommandResponse commandResponse = userAccountHandler.authorizeUser();
+            if (commandResponse.status().equals("ERROR")) {
+                System.out.println(commandResponse.message());
+                stop();
+            }
+
+            while (isRunning) {
+
                 UserRequest<City> request = userInput.getUserRequest();
                 if (request.command().equals(EXIT_COMMAND) && userInput.checkBeforeExit()) {
                     isRunning = false;
                 } else {
                     ioUtil.write(connectionHandler.sendCommand(request).message());
                 }
-            } catch (IOException e) {
-                System.out.println(CONNECTION_ERROR_MESSAGE + e.getMessage());
-                Thread.sleep(RECONNECTION_SLEEP_TIME);
-                connectionHandler.reconnection();
             }
+        } catch (IOException e) {
+            System.out.println(CONNECTION_ERROR_MESSAGE + e.getMessage());
+            Thread.sleep(RECONNECTION_SLEEP_TIME);
+            reconnect = true;
         }
     }
 

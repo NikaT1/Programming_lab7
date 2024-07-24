@@ -25,9 +25,14 @@ public class ShowCommand<T> implements Command<T> {
     }
 
     public CommandResponse execute(UserRequest<T> request) {
-        String result = dataService.getCollectionStream()
-                .map(Object::toString)
-                .collect(Collectors.joining(";\n"));
+        String result = "";
+        if (dataService.getSize() == 0) {
+            result = "Коллекция пуста";
+        } else {
+            result = dataService.getCollectionStream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(";\n"));
+        }
         return new CommandResponse("OK", result);
     }
 }

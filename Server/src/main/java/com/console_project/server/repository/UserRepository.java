@@ -12,6 +12,9 @@ import static com.console_project.server.configuration.DBConfiguration.USER_TABL
 import static com.console_project.server.configuration.DBConfiguration.USER_TABLE_SELECT;
 
 public interface UserRepository {
+
+    void init() throws SQLException;
+
     boolean find(User user);
 
     boolean add(User user);

@@ -1,9 +1,6 @@
 package com.console_project.client.io_util;
 
-import com.console_project.shared.model.City;
-import com.console_project.shared.model.Climate;
-import com.console_project.shared.model.Coordinates;
-import com.console_project.shared.model.Human;
+import com.console_project.shared.model.*;
 import lombok.RequiredArgsConstructor;
 
 import java.text.DateFormat;
@@ -23,6 +20,7 @@ public class IOutilCity implements IOutil<City> {
 
     private final String WRONG_INPUT_MESSAGE = "Неверный формат данных, повторите ввод!";
     private final Scanner scanner;
+    private final User user;
 
     /**
      * Метод, считывающий и создающий объект класса City.
@@ -42,6 +40,7 @@ public class IOutilCity implements IOutil<City> {
                 .establishmentDate(readEstablishmentDate())
                 .agglomeration(readAgglomeration())
                 .governor(readGovernor())
+                .owner(user.getUsername())
                 .build();
     }
 
